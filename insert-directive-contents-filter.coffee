@@ -3,11 +3,10 @@
 RSVP      = require('rsvp')
 path      = require('path')
 fs        = require('fs')
-helpers   = require('broccoli-kitchen-sink-helpers')
 async     = require('async')
 
-Filter                 = require('broccoli-filter')
-SprocketsResolver      = require('./resolver')
+Filter             = require('broccoli-filter')
+SprocketsResolver  = require('./resolver')
 
 
 # Mimic Sprocket-style `//= require ...` directives to concatenate JS/CSS via broccoli.
