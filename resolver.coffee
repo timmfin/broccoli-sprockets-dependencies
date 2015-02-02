@@ -126,11 +126,15 @@ class SprocketsResolver extends BaseResolver
   _process_require_tree_directive: (parentPath, requiredDir) ->
     new Error("The require_tree directive can only take one argument") if rest?.length > 0
 
+    # Remove the trailing slash if there is one
+    requiredDir = @_trimTrailingSlash requiredDir
+
     [resolvedDir, relativePath] = @resolveDirAndPath requiredDir,
       filename: parentPath
       loadPaths: @config.loadPaths
       allowRelativeLookupWithoutPrefix: false
       onlyDirectory: true
+
 
     dirPath = path.join resolvedDir, relativePath
 
@@ -151,6 +155,9 @@ class SprocketsResolver extends BaseResolver
 
   _process_require_directory_directive: (parentPath, requiredDir) ->
     new Error("The require_directory directive can only take one argument") if rest?.length > 0
+
+    # Remove the trailing slash if there is one
+    requiredDir = @_trimTrailingSlash requiredDir
 
     [resolvedDir, relativePath] = @resolveDirAndPath requiredDir,
       filename: parentPath
@@ -174,6 +181,12 @@ class SprocketsResolver extends BaseResolver
     .map (p) =>
       @createDependency resolvedDir, relativePath + '/' + p,
         from: "require_directory #{requiredDir}"
+
+  _trimTrailingSlash: (requiredDir) ->
+    if requiredDir[requiredDir.length - 1] == '/'
+      requiredDir.slice(0, -1)
+    else
+      requiredDir
 
 
   # TODO extract lang stuff to another filter (separate or that extends this one?)
