@@ -9,7 +9,7 @@
     "shellwords": "^0.1.0",
     "walk-sync": "^0.1.2",
 
-    "broccoli-filter": "^0.1.6",
+    "broccoli-filter": "^0.1.11",
     "broccoli-kitchen-sink-helpers": "^0.2.4",
 
     "broccoli-dependencies": "git://github.com/timmfin/broccoli-dependencies.git"
