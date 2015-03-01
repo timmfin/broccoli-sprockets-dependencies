@@ -4,10 +4,11 @@ RSVP      = require('rsvp')
 path      = require('path')
 fs        = require('fs')
 async     = require('async')
+Filter    = require('broccoli-filter')
+helpers   = require('broccoli-kitchen-sink-helpers')
 
-Filter             = require('broccoli-filter')
 SprocketsResolver  = require('./resolver')
-
+{ resolvePath } = require('bender-broccoli-utils')
 
 # Mimic Sprocket-style `//= require ...` directives to concatenate JS/CSS via broccoli.
 #
@@ -63,10 +64,18 @@ class InsertDirectiveContentsFilter extends Filter
       header = SprocketsResolver.extractHeader(fileContents)
       fileContents = fileContents.slice(header.length) if fileContents.indexOf(header) is 0
 
+      # Hacky, `options.loadPaths` might be a function (revisit)
+      dirsToCheck = [srcDir].concat(@options.loadPaths?() ? @options.loadPaths ? [])
+
       deferred = RSVP.defer()
 
-      async.map allRelativeDependencyPaths, (filepath, callback) ->
-        fs.readFile srcDir + '/' + filepath, { encoding: 'utf8' }, callback
+      async.map allRelativeDependencyPaths, (filepath, callback) =>
+
+        resolvedPath = resolvePath filepath,
+          filename: srcDir + '/' + relativePath
+          loadPaths: dirsToCheck
+
+        fs.readFile resolvedPath, { encoding: 'utf8' }, callback
       , (err, contentsOfAllDependencies) ->
         if err
           deferred.reject err
