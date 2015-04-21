@@ -6,11 +6,12 @@
     "async": "^0.9.0",
     "bender-broccoli-utils": "git://github.com/timmfin/bender-broccoli-utils.git",
     "broccoli-dependencies": "git://github.com/timmfin/broccoli-dependencies.git",
-    "broccoli-filter": "^0.1.11",
+    "broccoli-filter": "^0.1.12",
     "broccoli-kitchen-sink-helpers": "^0.2.4",
     "lodash": "^2.4.1",
     "rsvp": "^3.0.13",
     "shellwords": "^0.1.0",
+    "symlink-or-copy": "^1.0.1",
     "walk-sync": "^0.1.2"
   }
 }

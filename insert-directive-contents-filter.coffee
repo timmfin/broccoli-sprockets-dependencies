@@ -5,7 +5,8 @@ path      = require('path')
 fs        = require('fs')
 async     = require('async')
 Filter    = require('broccoli-filter')
-helpers   = require('broccoli-kitchen-sink-helpers')
+
+symlinkOrCopySync = require('symlink-or-copy').sync
 
 SprocketsResolver  = require('./resolver')
 { resolvePath } = require('bender-broccoli-utils')
@@ -57,7 +58,7 @@ class InsertDirectiveContentsFilter extends Filter
     allRelativeDependencyPaths.pop()  # remove the self dependency
 
     if not depTree? or allRelativeDependencyPaths.length is 0
-      helpers.copyPreserveSync srcDir + '/' + relativePath, destDir + '/' + relativePath
+      symlinkOrCopySync srcDir + '/' + relativePath, destDir + '/' + relativePath
     else
       # Remove the directive header if it still exists (might be a bit better if
       # only the directive lines in the header were removed)
