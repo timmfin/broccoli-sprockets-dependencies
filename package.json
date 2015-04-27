@@ -13,5 +13,15 @@
     "shellwords": "^0.1.0",
     "symlink-or-copy": "^1.0.1",
     "walk-sync": "^0.1.2"
+  },
+  "scripts": {
+    "build": "./compile-coffeescript.sh",
+    "watch": "./watch-coffeescript.sh",
+    "clean": "./clean.sh",
+    "prepublish": "./compile-coffeescript.sh",
+    "postinstall": "./run-prepublish-if-not-already-run.sh"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.2"
   }
 }
