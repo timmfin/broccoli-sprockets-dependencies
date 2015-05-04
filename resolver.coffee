@@ -23,7 +23,7 @@ HEADER_PATTERN = ///
 
 DIRECTIVE_PATTERN = ///
   ^
-  \W* =   # the comment chars then an equal sign
+  (\W* =) # the comment chars then an equal sign
   \s*
   (\w+)   # the directive command
   \s*
@@ -88,7 +88,7 @@ class SprocketsResolver extends BaseResolver
     directivePattern = _.clone(@config.directivePattern) # clone regex for safety
 
     while match = directivePattern.exec(header)
-      [__, directive, directiveArgs] = match
+      [__, preDirective, directive, directiveArgs] = match
       directiveArgs = shellwords.split directiveArgs
 
       directiveFunc = "_process_#{directive}_directive"
@@ -96,7 +96,8 @@ class SprocketsResolver extends BaseResolver
       if @[directiveFunc]?
         directiveResults = directiveResults.concat @[directiveFunc](targetFilePath, directiveArgs...)
       else
-        throw new Error "Unknown directive #{directive} found in #{targetFilePath}"
+        console.warn "Potentially unknown directive `#{preDirective.trim()} #{directive}` ? (found in #{targetFilePath})"
+        # throw new Error "Unknown directive #{directive} found in #{targetFilePath}"
 
     directiveResults
 
