@@ -140,18 +140,12 @@ class SprocketsResolver extends BaseResolver
 
     dirPath = path.join resolvedDir, relativePath
 
-    # Even though just a dir, call check extensions so that we look at the parent file
-    # (the file the require came from) to see what kind of files we should filter
-    # the directory for
-    validExtensions = @extensionsToCheck requiredDir,
-      filename: parentPath
-
     # Gather all recursive files, exclude any that don't have a matching extension,
     # and then join with dir to create absolute paths
-    walkSync(dirPath).filter (p) ->
-      ext = path.extname(p).slice(1)
-      ext isnt '' and ext in validExtensions
-    .map (p) =>
+
+    filterFunc = @_makeFilterForValidExtensionsAndTypes(requiredDir, parentPath)
+
+    walkSync(dirPath).filter(filterFunc).map (p) =>
       @createDependency resolvedDir, relativePath + '/' + p,
         from: "require_tree #{requiredDir}"
 
@@ -169,20 +163,35 @@ class SprocketsResolver extends BaseResolver
 
     dirPath = path.join resolvedDir, relativePath
 
+
+    # Gather all directory files, exclude any that don't have a matching extension,
+    # and then join with dir to create absolute paths
+
+    filterFunc = @_makeFilterForValidExtensionsAndTypes(requiredDir, parentPath)
+
+    fs.readdirSync(dirPath).filter(filterFunc).map (p) =>
+      @createDependency resolvedDir, relativePath + '/' + p,
+        from: "require_directory #{requiredDir}"
+
+  _makeFilterForValidExtensionsAndTypes: (requiredDir, filename) ->
+
     # Even though just a dir, call check extensions so that we look at the parent file
     # (the file the require came from) to see what kind of files we should filter
     # the directory for
     validExtensions = @extensionsToCheck requiredDir,
-      filename: parentPath
+      filename: filename
 
-    # Gather all directory files, exclude any that don't have a matching extension,
-    # and then join with dir to create absolute paths
-    fs.readdirSync(dirPath).filter (p) ->
+    # TODO, super ghetto, need to revisit
+    if validExtensions.indexOf('js') isnt -1
+      excludeJadeHTMLFiles = true
+
+    (p) ->
       ext = path.extname(p).slice(1)
-      ext isnt '' and ext in validExtensions
-    .map (p) =>
-      @createDependency resolvedDir, relativePath + '/' + p,
-        from: "require_directory #{requiredDir}"
+      allExts = p.split('.').slice(1).join('.')
+
+      # TODO, super ghetto, need to revisit
+      ext isnt '' and ext in validExtensions and (not excludeJadeHTMLFiles or allExts not in ['html.jade', 'html.js'])
+
 
   _trimTrailingSlash: (requiredDir) ->
     if requiredDir[requiredDir.length - 1] == '/'
