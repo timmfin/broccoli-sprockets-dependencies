@@ -41,6 +41,7 @@ POTENTIAL_DIRECTIVE_EXTENSIONS = [
 
   'coffee'
   'js'
+  'cjsx'
 
   'lyaml'
 ]
@@ -226,8 +227,8 @@ class SprocketsResolver extends BaseResolver
     # Also include any potential preprocesser extensions
     if extension in ['sass', 'scss', 'css']
       ['sass', 'scss', 'css']
-    else if extension in ['coffee', 'js', 'lyaml', 'handlebars']
-      ['coffee', 'js', 'jade', 'lyaml', 'handlebars']
+    else if extension in ['coffee', 'js', 'cjsx', 'lyaml', 'handlebars']
+      ['coffee', 'js', 'cjsx', 'jade', 'lyaml', 'handlebars']
     else
       [extension]
 
