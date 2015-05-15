@@ -34,6 +34,8 @@ SprocketsResolver  = require('./resolver')
 #       loadPaths: externalLoadPaths
 
 class InsertDirectiveContentsFilter extends Filter
+  # Save broccoli-filter cache to disk
+  cacheByContent: true
 
   extensions: SprocketsResolver.REQUIREABLE_EXTENSIONS
 
